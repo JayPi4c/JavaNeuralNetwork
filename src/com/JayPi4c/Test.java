@@ -10,14 +10,14 @@ import com.JayPi4c.NeuralNetwork.NeuralNetwork;
 public class Test {
 	public static void main(String args[]) throws Exception {
 
-		// makeSerializedTrainedNetwork();
+		makeSerializedTrainedNetwork();
 		String absolutePath = new File(".").getAbsolutePath();
 		File file = new File(absolutePath);
 		absolutePath = file.getParentFile().toString();
 		NeuralNetwork nn = NeuralNetwork.deserialize(new File(absolutePath + "/NeuralNetwork.nn"));
 
 		double input[][] = { { 0.9 } };
-		double target[][] = { { 0.45 } };
+		double target[][] = { { 0.81 } };
 		System.out.println("Prediction: ");
 		nn.query(input).print();
 		System.out.println("Target: ");
@@ -27,7 +27,7 @@ public class Test {
 	public static void makeSerializedTrainedNetwork() throws IllegalAccessException, IllegalArgumentException,
 			InvocationTargetException, NoSuchMethodException, SecurityException, IOException {
 
-		NeuralNetwork nn = new NeuralNetwork(1, 3, 1, 0.1);
+		NeuralNetwork nn = new NeuralNetwork(1, 5, 1, 0.1);
 		double inputs[][] = { { 1 } };
 		double targets[][] = { { 1 } };
 		System.out.println("Prediction: ");
@@ -51,7 +51,7 @@ public class Test {
 
 		for (int i = 0; i < 1000000; i++) {
 			double input[][] = { { Math.random() } };
-			double target[][] = { { input[0][0] * 0.5 } };
+			double target[][] = { { input[0][0] * input[0][0] } };
 			nn.train(new Matrix(input), new Matrix(target));
 		}
 		System.out.println("Training done!");

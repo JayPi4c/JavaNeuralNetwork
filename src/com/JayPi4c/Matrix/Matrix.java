@@ -3,6 +3,7 @@ package com.JayPi4c.Matrix;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Matrix implements Serializable {
 
@@ -103,10 +104,19 @@ public class Matrix implements Serializable {
 		return this;
 	}
 
+	public Matrix randomize(double min, double max) {
+		for (int row = 0; row < this.rows; row++) {
+			for (int col = 0; col < this.cols; col++) {
+				this.data[row][col] = ThreadLocalRandom.current().nextDouble(min, max + 0.000001);
+			}
+		}
+		return this;
+	}
+
 	public Matrix randomize() {
 		for (int row = 0; row < this.rows; row++) {
 			for (int col = 0; col < this.cols; col++) {
-				this.data[row][col] = Math.random() * 2 - 1;
+				this.data[row][col] = ThreadLocalRandom.current().nextDouble();
 			}
 		}
 		return this;

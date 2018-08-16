@@ -23,17 +23,13 @@ public class NeuralNetwork implements Serializable {
 	public NeuralNetwork() {
 	}
 
-	public NeuralNetwork(int inputnodes, int hiddennodes, int outputnodes, double learningrate)
-			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException,
-			SecurityException {
+	public NeuralNetwork(int inputnodes, int hiddennodes, int outputnodes, double learningrate) {
 		this.inputnodes = inputnodes;
 		this.hiddennodes = hiddennodes;
 		this.outputnodes = outputnodes;
 		this.learningrate = learningrate;
-		this.wih = new Matrix(this.hiddennodes, this.inputnodes).map(new NeuralNetwork(),
-				NeuralNetwork.class.getMethod("random", double.class));
-		this.who = new Matrix(this.outputnodes, this.hiddennodes).map(new NeuralNetwork(),
-				NeuralNetwork.class.getMethod("random", double.class));
+		this.wih = new Matrix(this.hiddennodes, this.inputnodes).randomize(-0.5, 0.5);
+		this.who = new Matrix(this.outputnodes, this.hiddennodes).randomize(-0.5, 0.5);
 
 	}
 
@@ -92,7 +88,6 @@ public class NeuralNetwork implements Serializable {
 
 	public double random(double d) {
 		return Math.random() - 0.5;
-
 	}
 
 	public double sigmoid(double x) {
@@ -143,16 +138,24 @@ public class NeuralNetwork implements Serializable {
 	 */
 	public NeuralNetwork copy() {
 		NeuralNetwork output = null;
-		try {
-			output = new NeuralNetwork(this.inputnodes, this.hiddennodes, this.outputnodes, this.learningrate);
-			output.who = this.who.copy();
-			output.wih = this.wih.copy();
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-				| SecurityException e) {
-			e.printStackTrace();
-		}
+		output = new NeuralNetwork(this.inputnodes, this.hiddennodes, this.outputnodes, this.learningrate);
+		output.who = this.who.copy();
+		output.wih = this.wih.copy();
 
 		return output;
 	}
+
+	// TODO: adding mutation to make the NeuralNetwork generic
+	public NeuralNetwork mutate(double mutationrate) {
+
+		return null;
+	}
+
+	// TODO: crossover
+	public NeuralNetwork crossover(NeuralNetwork other, double rate) {
+		return null;
+	}
+
+	// TODO: subclass: GenericNeuralNetwork with crossover and mutation
 
 }
