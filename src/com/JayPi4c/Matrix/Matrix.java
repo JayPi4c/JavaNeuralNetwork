@@ -14,6 +14,12 @@ public class Matrix implements Serializable {
 	public Matrix() {
 	}
 
+	/**
+	 * Erstellt eine Matrix und initialisiert sie mit 0 als Werten
+	 * 
+	 * @param rows die Anzahl der Reihen
+	 * @param cols die Anzahl der Spalten
+	 */
 	public Matrix(int rows, int cols) {
 		this.rows = rows;
 		this.cols = cols;
