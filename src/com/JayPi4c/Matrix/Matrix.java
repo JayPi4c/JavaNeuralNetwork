@@ -25,6 +25,7 @@ public class Matrix implements Serializable {
 	 * 
 	 * @param rows die Anzahl der Reihen
 	 * @param cols die Anzahl der Spalten
+	 * @since 1.0.0
 	 */
 	public Matrix(int rows, int cols) {
 		this.rows = rows;
@@ -36,6 +37,7 @@ public class Matrix implements Serializable {
 	 * Erstelle eine Matrix aus einem zweidimensionalem Array
 	 * 
 	 * @param data
+	 * @since 1.0.0
 	 */
 	public Matrix(double data[][]) {
 		this.rows = data.length;
@@ -50,6 +52,7 @@ public class Matrix implements Serializable {
 	 * Erstellt ein zweidimensionales Array aus der Matrix
 	 * 
 	 * @return
+	 * @since 1.0.0
 	 */
 	public double[][] toArray() {
 		double output[][] = new double[this.rows][this.cols];
@@ -64,6 +67,7 @@ public class Matrix implements Serializable {
 	 * 
 	 * @param m
 	 * @return
+	 * @since 1.0.0
 	 */
 	public static double[][] toArray(Matrix m) {
 		double output[][] = new double[m.rows][m.cols];
@@ -77,6 +81,7 @@ public class Matrix implements Serializable {
 	 * Kopiert diese Matrix
 	 * 
 	 * @return unabhängige Kopie der Matrix
+	 * @since 1.0.0
 	 */
 	public Matrix copy() {
 		return new Matrix(this.data);
@@ -87,6 +92,7 @@ public class Matrix implements Serializable {
 	 * 
 	 * @param d der Wert, mit dem die Matrix gefüllt wird.
 	 * @return
+	 * @since 1.0.0
 	 */
 	public Matrix fill(double d) {
 		for (int row = 0; row < this.rows; row++) {
@@ -109,6 +115,7 @@ public class Matrix implements Serializable {
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
 	 * @throws InvocationTargetException
+	 * @since 1.0.0
 	 */
 	public Matrix fill(Object obj, Method m)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -132,6 +139,7 @@ public class Matrix implements Serializable {
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
 	 * @throws InvocationTargetException
+	 * @since 1.0.0
 	 */
 	public Matrix map(Object obj, Method m)
 			throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
@@ -149,6 +157,7 @@ public class Matrix implements Serializable {
 	 * @param min
 	 * @param max
 	 * @return
+	 * @since 1.0.0
 	 */
 	public Matrix randomize(double min, double max) {
 		for (int row = 0; row < this.rows; row++) {
@@ -163,6 +172,7 @@ public class Matrix implements Serializable {
 	 * füllt die Matrix mit zufälligen Werten zwischen 0 und 1
 	 * 
 	 * @return
+	 * @since 1.0.0
 	 */
 	public Matrix randomize() {
 		for (int row = 0; row < this.rows; row++) {
@@ -175,6 +185,8 @@ public class Matrix implements Serializable {
 
 	/**
 	 * Schreibt den Inhalt der Matrix anschaulich in die Konsole.
+	 * 
+	 * @since 1.0.0
 	 */
 	public void print() {
 		System.out.println("-------------------------------------------------");
@@ -194,6 +206,7 @@ public class Matrix implements Serializable {
 	/**
 	 * 
 	 * @return
+	 * @since 1.0.0
 	 */
 	public Matrix transpose() {
 		Matrix m = new Matrix(this.cols, this.rows);
@@ -207,6 +220,12 @@ public class Matrix implements Serializable {
 		return this;
 	}
 
+	/**
+	 * 
+	 * @param matrix
+	 * @return
+	 * @since 1.0.0
+	 */
 	public static Matrix transpose(Matrix matrix) {
 		Matrix newMatrix = new Matrix(matrix.cols, matrix.rows);
 		for (int row = 0; row < matrix.rows; row++)
@@ -215,6 +234,12 @@ public class Matrix implements Serializable {
 		return newMatrix;
 	}
 
+	/**
+	 * 
+	 * @param m
+	 * @return
+	 * @since 1.0.0
+	 */
 	public Matrix dot(Matrix m) {
 		if (this.cols != m.rows) {
 			System.out.println("A's cols and B's rows must match!");
@@ -237,6 +262,13 @@ public class Matrix implements Serializable {
 		return this;
 	}
 
+	/**
+	 * 
+	 * @param a
+	 * @param b
+	 * @return
+	 * @since 1.0.0
+	 */
 	public static Matrix dot(Matrix a, Matrix b) {
 		if (a.cols != b.rows) {
 			System.out.println("A's cols and B's rows must match!");
@@ -255,6 +287,12 @@ public class Matrix implements Serializable {
 		return newMatrix;
 	}
 
+	/**
+	 * 
+	 * @param m
+	 * @return
+	 * @since 1.0.0
+	 */
 	public Matrix sub(Matrix m) {
 		if (m.cols != this.cols || m.rows != this.rows) {
 			System.out.println("rows and columns must match!");
@@ -266,6 +304,13 @@ public class Matrix implements Serializable {
 		return this;
 	}
 
+	/**
+	 * 
+	 * @param a
+	 * @param b
+	 * @return
+	 * @since 1.0.0
+	 */
 	public static Matrix sub(Matrix a, Matrix b) {
 		if (a.cols != b.cols || a.rows != b.rows) {
 			System.out.println("rows and columns must match!");
@@ -278,6 +323,13 @@ public class Matrix implements Serializable {
 		return newMatrix;
 	}
 
+	/**
+	 * 
+	 * @param d
+	 * @param m
+	 * @return
+	 * @since 1.0.0
+	 */
 	public static Matrix sub(double d, Matrix m) {
 		Matrix newMatrix = new Matrix(m.rows, m.cols);
 		for (int row = 0; row < newMatrix.rows; row++)
@@ -286,6 +338,12 @@ public class Matrix implements Serializable {
 		return newMatrix;
 	}
 
+	/**
+	 * 
+	 * @param m
+	 * @return
+	 * @since 1.0.0
+	 */
 	public Matrix add(Matrix m) {
 		if (this.cols != m.cols || this.rows != m.rows) {
 			System.out.println("rows and columns must match!");
@@ -297,6 +355,13 @@ public class Matrix implements Serializable {
 		return this;
 	}
 
+	/**
+	 * 
+	 * @param a
+	 * @param b
+	 * @return
+	 * @since 1.0.0
+	 */
 	public static Matrix add(Matrix a, Matrix b) {
 		if (a.cols != b.cols || a.rows != b.rows) {
 			System.out.println("rows and columns must match!");
@@ -309,6 +374,12 @@ public class Matrix implements Serializable {
 		return newMatrix;
 	}
 
+	/**
+	 * 
+	 * @param scl
+	 * @return
+	 * @since 1.0.0
+	 */
 	public Matrix mult(double scl) {
 		for (int row = 0; row < this.rows; row++)
 			for (int col = 0; col < this.cols; col++)
@@ -316,6 +387,12 @@ public class Matrix implements Serializable {
 		return this;
 	}
 
+	/**
+	 * 
+	 * @param m
+	 * @return
+	 * @since 1.0.0
+	 */
 	public Matrix mult(Matrix m) {
 		if (this.cols != m.cols || this.rows != m.rows) {
 			System.out.println("rows and columns must match!");
@@ -327,6 +404,13 @@ public class Matrix implements Serializable {
 		return this;
 	}
 
+	/**
+	 * 
+	 * @param m
+	 * @param scl
+	 * @return
+	 * @since 1.0.0
+	 */
 	public static Matrix mult(Matrix m, double scl) {
 		Matrix newMatrix = new Matrix(m.rows, m.cols);
 		for (int row = 0; row < newMatrix.rows; row++)
@@ -335,6 +419,13 @@ public class Matrix implements Serializable {
 		return newMatrix;
 	}
 
+	/**
+	 * 
+	 * @param a
+	 * @param b
+	 * @return
+	 * @since 1.0.0
+	 */
 	public static Matrix mult(Matrix a, Matrix b) {
 		if (a.cols != b.cols || a.rows != b.rows) {
 			System.out.println("rows and columns must match!");
