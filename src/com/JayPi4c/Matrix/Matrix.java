@@ -5,12 +5,18 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * 
+ * @author JayPi4c
+ * @version 1.0.0
+ */
 public class Matrix implements Serializable {
 
 	private static final long serialVersionUID = -1611903368454112326L;
 	int rows, cols;
 	double data[][];
 
+	@Deprecated
 	public Matrix() {
 	}
 
@@ -26,6 +32,11 @@ public class Matrix implements Serializable {
 		this.data = new double[this.rows][this.cols];
 	}
 
+	/**
+	 * Erstelle eine Matrix aus einem zweidimensionalem Array
+	 * 
+	 * @param data
+	 */
 	public Matrix(double data[][]) {
 		this.rows = data.length;
 		this.cols = data[0].length;
@@ -35,6 +46,11 @@ public class Matrix implements Serializable {
 				this.data[row][col] = data[row][col];
 	}
 
+	/**
+	 * Erstellt ein zweidimensionales Array aus der Matrix
+	 * 
+	 * @return
+	 */
 	public double[][] toArray() {
 		double output[][] = new double[this.rows][this.cols];
 		for (int row = 0; row < this.rows; row++)
@@ -43,6 +59,12 @@ public class Matrix implements Serializable {
 		return output;
 	}
 
+	/**
+	 * Erstellt aus einer Matrix ein zweidimensionales Array
+	 * 
+	 * @param m
+	 * @return
+	 */
 	public static double[][] toArray(Matrix m) {
 		double output[][] = new double[m.rows][m.cols];
 		for (int row = 0; row < m.rows; row++)
@@ -51,10 +73,21 @@ public class Matrix implements Serializable {
 		return output;
 	}
 
+	/**
+	 * Kopiert diese Matrix
+	 * 
+	 * @return unabhängige Kopie der Matrix
+	 */
 	public Matrix copy() {
 		return new Matrix(this.data);
 	}
 
+	/**
+	 * Füllt die Matrix mit immer den selben Werten
+	 * 
+	 * @param d der Wert, mit dem die Matrix gefüllt wird.
+	 * @return
+	 */
 	public Matrix fill(double d) {
 		for (int row = 0; row < this.rows; row++) {
 			for (int col = 0; col < this.cols; col++) {
@@ -110,6 +143,13 @@ public class Matrix implements Serializable {
 		return this;
 	}
 
+	/**
+	 * füllt die Matrix mit zufälligen Werten zwischen min und max
+	 * 
+	 * @param min
+	 * @param max
+	 * @return
+	 */
 	public Matrix randomize(double min, double max) {
 		for (int row = 0; row < this.rows; row++) {
 			for (int col = 0; col < this.cols; col++) {
@@ -119,6 +159,11 @@ public class Matrix implements Serializable {
 		return this;
 	}
 
+	/**
+	 * füllt die Matrix mit zufälligen Werten zwischen 0 und 1
+	 * 
+	 * @return
+	 */
 	public Matrix randomize() {
 		for (int row = 0; row < this.rows; row++) {
 			for (int col = 0; col < this.cols; col++) {
@@ -128,6 +173,9 @@ public class Matrix implements Serializable {
 		return this;
 	}
 
+	/**
+	 * Schreibt den Inhalt der Matrix anschaulich in die Konsole.
+	 */
 	public void print() {
 		System.out.println("-------------------------------------------------");
 		for (int row = 0; row < this.rows; row++) {
@@ -143,6 +191,10 @@ public class Matrix implements Serializable {
 		return Math.random();
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
 	public Matrix transpose() {
 		Matrix m = new Matrix(this.cols, this.rows);
 		for (int row = 0; row < this.rows; row++)
