@@ -26,7 +26,7 @@ public class NeuralNetwork implements Serializable {
 
 	/**
 	 * Dieser Konstruktor ist nur dazu da, um {@link #sigmoid(double)} und
-	 * {@link #random(double)} für
+	 * {@link #random(double)} f&uumlr
 	 * {@link Matrix#map(Object, java.lang.reflect.Method)} erreichbar zu machen
 	 * 
 	 * @deprecated
@@ -62,11 +62,11 @@ public class NeuralNetwork implements Serializable {
 
 	// ****************************************************************************************************************//
 	/**
-	 * Durch die gegebenen Eingaben lässt sich mit den Gewichten eine Ausgabe
-	 * ermitteln, die die Schätzung des Neuronalen Netzes wider spiegeln.
+	 * Durch die gegebenen Eingaben l&aumlsst sich mit den Gewichten eine Ausgabe
+	 * ermitteln, die die Sch&aumltzung des Neuronalen Netzes wider spiegeln.
 	 * 
 	 * @param inputs_list
-	 * @return die Schätzung des Neuronalen Netzes.
+	 * @return die Sch&aumltzung des Neuronalen Netzes.
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
 	 * @throws InvocationTargetException
@@ -87,11 +87,11 @@ public class NeuralNetwork implements Serializable {
 	}
 
 	/**
-	 * Durch die gegebenen Eingaben lässt sich mit den Gewichten eine Ausgabe
-	 * ermitteln, die die Schätzung des Neuronalen Netzes wider spiegeln.
+	 * Durch die gegebenen Eingaben l&aumlsst sich mit den Gewichten eine Ausgabe
+	 * ermitteln, die die Sch&aumltzung des Neuronalen Netzes wider spiegeln.
 	 * 
 	 * @param inputs_list
-	 * @return die Schätzung des Neuronalen Netzes.
+	 * @return die Sch&aumltzung des Neuronalen Netzes.
 	 * @throws IllegalAccessException
 	 * @throws IllegalArgumentException
 	 * @throws InvocationTargetException
@@ -106,8 +106,8 @@ public class NeuralNetwork implements Serializable {
 
 	// ****************************************************************************************************************//
 	/**
-	 * Durch angabe der Eingabe und der gewünschten Ausgabe können die Gewichte des
-	 * Neuronalen Netzes angepasst werden.
+	 * Durch angabe der Eingabe und der gew&uumlnschten Ausgabe k&oumlnnen die
+	 * Gewichte des Neuronalen Netzes angepasst werden.
 	 * 
 	 * @param inputs_list  die Eingaben in das Neuronale Netz
 	 * @param targets_list die Ausgabe des Neuronalen Netzes
@@ -144,8 +144,8 @@ public class NeuralNetwork implements Serializable {
 	}
 
 	/**
-	 * Durch angabe der Eingabe und der gewünschten Ausgabe können die Gewichte des
-	 * Neuronalen Netzes angepasst werden.
+	 * Durch angabe der Eingabe und der gew&uumlnschten Ausgabe k&oumlnnen die
+	 * Gewichte des Neuronalen Netzes angepasst werden.
 	 * 
 	 * @param inputs_list  die Eingaben in das Neuronale Netz
 	 * @param targets_list die Ausgabe des Neuronalen Netzes
@@ -164,10 +164,10 @@ public class NeuralNetwork implements Serializable {
 	// ****************************************************************************************************************//
 
 	/**
-	 * Diese Funktion gibt einen zufälligen Wert zwischen -0.5 und 0.5 aus.
+	 * Diese Funktion gibt einen zuf&aumllligen Wert zwischen -0.5 und 0.5 aus.
 	 * 
-	 * @param d Notwendig für die {@link com.JayPi4c.Matrix.Matrix}
-	 * @return zufälliger Wert zwischen -0.5 und 0.5
+	 * @param d Notwendig f&uumlr die {@link com.JayPi4c.Matrix.Matrix}
+	 * @return zuf&aumllliger Wert zwischen -0.5 und 0.5
 	 * @since 1.0.0
 	 */
 	public double random(double d) {
@@ -179,7 +179,7 @@ public class NeuralNetwork implements Serializable {
 	 * Sigmoid-Funktion.
 	 * 
 	 * @param x
-	 * @return Der Wert der Sigmoid-Funktion für das angegebene x
+	 * @return Der Wert der Sigmoid-Funktion f&uumlr das angegebene x
 	 * @since 1.0.0
 	 */
 	public double sigmoid(double x) {
@@ -188,10 +188,10 @@ public class NeuralNetwork implements Serializable {
 
 	/**
 	 * 
-	 * Mit dieser Funktion lässt sich das Objekt des Neuronalen Netzes in einer
+	 * Mit dieser Funktion l&aumlsst sich das Objekt des Neuronalen Netzes in einer
 	 * Datei speichern, sodass auch nach beenden des Programms der Fortschritt bzw.
 	 * der Zustand des Netzes gespeichert bleiben kann. Die entstandene Datei kann
-	 * anschließend bzw. bei einem Neustart des Programms mit
+	 * anschlie&szligend bzw. bei einem Neustart des Programms mit
 	 * {@link #deserialize(File)} wieder eingelesen werden.
 	 * 
 	 * @param nn
@@ -211,10 +211,10 @@ public class NeuralNetwork implements Serializable {
 
 	/**
 	 * 
-	 * Mit dieser Funktion lässt sich ein Objekt des Neuronalen Netzes in einer
+	 * Mit dieser Funktion l&aumlsst sich ein Objekt des Neuronalen Netzes in einer
 	 * Datei speichern, sodass auch nach beenden des Programms der Fortschritt bzw.
 	 * der Zustand des Netzes gespeichert bleiben kann. Die entstandene Datei kann
-	 * anschließend bzw. bei einem neustart des Programms mit
+	 * anschlie&szligend bzw. bei einem neustart des Programms mit
 	 * {@link #deserialize(File)} wieder eingelesen werden.
 	 * 
 	 * @param nn
@@ -233,7 +233,7 @@ public class NeuralNetwork implements Serializable {
 	}
 
 	/**
-	 * Mit dieser Funktion lässt sich ein Neuronales Netz Objekt aus einer Datei
+	 * Mit dieser Funktion l&aumlsst sich ein Neuronales Netz Objekt aus einer Datei
 	 * erstellen, die mit {@link #serialize()} erstellt wurde.
 	 * 
 	 * @param f Ein File Object, welches die Daten des Neuronalen Netzes beinhaltet
@@ -271,16 +271,16 @@ public class NeuralNetwork implements Serializable {
 	// TODO: adding mutation to make the NeuralNetwork generic
 	/**
 	 * Durch eine Mutation des Neuronalen Netzes werden ein Anteil (mutationrate)
-	 * der Gewichte im Netz zufällig neu festgelegt.
+	 * der Gewichte im Netz zuf&aumlllig neu festgelegt.
 	 * 
 	 * Durch diese Funktion wird das aufrufende Neuronale Netz Objekt bearbeitet,
-	 * das heisst, dass der Rückgabewert dieser Funktion nicht zwangsläufig benutzt
-	 * werden muss.
+	 * das heisst, dass der R&uumlckgabewert dieser Funktion nicht zwangsl&aumlufig
+	 * benutzt werden muss.
 	 * 
 	 * @deprecated Diese Funktion soll eigentlich in eine weitere, spezifischere
 	 *             Klasse untergebracht werden. (GenericNeuralNetwork)
 	 * @param mutationrate Der Anteil der Gewichte, die neu festgelegt werden.
-	 * @return Gibt das mutierte Neuronale Netz zurück.
+	 * @return Gibt das mutierte Neuronale Netz zur&uumlck.
 	 */
 	@Deprecated
 	public NeuralNetwork mutate(double mutationrate) {
@@ -291,7 +291,7 @@ public class NeuralNetwork implements Serializable {
 	// TODO: crossover
 	/**
 	 * Durch einen Crossover zweier Neuraler Netze wird, wie bei in echter DNA, eine
-	 * zufällige Mischung dieser beiden Netze erstellt.
+	 * zuf&aumlllige Mischung dieser beiden Netze erstellt.
 	 * 
 	 * @deprecated Diese Funktion soll eigentlich in eine weitere, spezifischere
 	 *             Klasse untergebracht werden. (GenericNeuralNetwork)

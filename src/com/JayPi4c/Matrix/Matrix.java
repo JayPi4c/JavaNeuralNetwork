@@ -80,7 +80,7 @@ public class Matrix implements Serializable {
 	/**
 	 * Kopiert diese Matrix
 	 * 
-	 * @return unabhängige Kopie der Matrix
+	 * @return unabh&aumlngige Kopie der Matrix
 	 * @since 1.0.0
 	 */
 	public Matrix copy() {
@@ -88,9 +88,9 @@ public class Matrix implements Serializable {
 	}
 
 	/**
-	 * Füllt die Matrix mit immer den selben Werten
+	 * F&uumlllt die Matrix mit immer den selben Werten
 	 * 
-	 * @param d der Wert, mit dem die Matrix gefüllt wird.
+	 * @param d der Wert, mit dem die Matrix gef&uumlllt wird.
 	 * @return
 	 * @since 1.0.0
 	 */
@@ -152,7 +152,7 @@ public class Matrix implements Serializable {
 	}
 
 	/**
-	 * füllt die Matrix mit zufälligen Werten zwischen min und max
+	 * f&uumlllt die Matrix mit zuf&aumllligen Werten zwischen min und max
 	 * 
 	 * @param min
 	 * @param max
@@ -169,7 +169,7 @@ public class Matrix implements Serializable {
 	}
 
 	/**
-	 * füllt die Matrix mit zufälligen Werten zwischen 0 und 1
+	 * f&uumlllt die Matrix mit zuf&aumllligen Werten zwischen 0 und 1
 	 * 
 	 * @return
 	 * @since 1.0.0
