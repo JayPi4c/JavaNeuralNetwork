@@ -18,6 +18,7 @@ import com.JayPi4c.Matrix.Matrix;
 public class NeuralNetwork implements Serializable {
 
 	private static final long serialVersionUID = 5795625580326323029L;
+	private static final String err_Message = "An error has occured. Please contact jonas4c@freenet.de to get help on this problem. Please consider to add the following errorcode for debugging purposes: ";
 
 	private int inputnodes, hiddennodes, outputnodes;
 	private double learningrate;
@@ -67,22 +68,23 @@ public class NeuralNetwork implements Serializable {
 	 * 
 	 * @param inputs_list
 	 * @return die Sch&aumltzung des Neuronalen Netzes.
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 * @throws InvocationTargetException
-	 * @throws NoSuchMethodException
-	 * @throws SecurityException
 	 * @since 1.0.0
 	 */
-	public Matrix query(Matrix inputs_list) throws IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException, NoSuchMethodException, SecurityException {
-		Matrix inputs = Matrix.transpose(inputs_list);
-		Matrix hidden_inputs = Matrix.dot(this.wih, inputs);
-		Matrix hidden_outputs = hidden_inputs.map(new NeuralNetwork(),
-				NeuralNetwork.class.getMethod("sigmoid", double.class));
-		Matrix final_inputs = Matrix.dot(this.who, hidden_outputs);
-		Matrix final_outputs = final_inputs.map(new NeuralNetwork(),
-				NeuralNetwork.class.getMethod("sigmoid", double.class));
+	public Matrix query(Matrix inputs_list) {
+		Matrix final_outputs = null;
+		try {
+			Matrix inputs = Matrix.transpose(inputs_list);
+			Matrix hidden_inputs = Matrix.dot(this.wih, inputs);
+			Matrix hidden_outputs = hidden_inputs.map(new NeuralNetwork(),
+					NeuralNetwork.class.getMethod("sigmoid", double.class));
+			Matrix final_inputs = Matrix.dot(this.who, hidden_outputs);
+			final_outputs = final_inputs.map(new NeuralNetwork(),
+					NeuralNetwork.class.getMethod("sigmoid", double.class));
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+				| SecurityException e) {
+			System.out.println(err_Message);
+			System.err.println(e);
+		}
 		return final_outputs;
 	}
 
@@ -92,15 +94,9 @@ public class NeuralNetwork implements Serializable {
 	 * 
 	 * @param inputs_list
 	 * @return die Sch&aumltzung des Neuronalen Netzes.
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 * @throws InvocationTargetException
-	 * @throws NoSuchMethodException
-	 * @throws SecurityException
 	 * @since 1.0.0
 	 */
-	public Matrix query(double inputs_list[][]) throws IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException, NoSuchMethodException, SecurityException {
+	public Matrix query(double inputs_list[][]) {
 		return this.query(new Matrix(inputs_list));
 	}
 
@@ -118,29 +114,36 @@ public class NeuralNetwork implements Serializable {
 	 * @throws SecurityException
 	 * @since 1.0.0
 	 */
-	public void train(Matrix inputs_list, Matrix targets_list) throws IllegalAccessException, IllegalArgumentException,
-			InvocationTargetException, NoSuchMethodException, SecurityException {
-		Matrix inputs = Matrix.transpose(inputs_list);
-		Matrix targets = Matrix.transpose(targets_list);
+	public void train(Matrix inputs_list, Matrix targets_list) {
+		try {
+			Matrix inputs = Matrix.transpose(inputs_list);
+			Matrix targets = Matrix.transpose(targets_list);
 
-		Matrix hidden_inputs = Matrix.dot(this.wih, inputs);
-		Matrix hidden_outputs = hidden_inputs.map(new NeuralNetwork(),
-				NeuralNetwork.class.getMethod("sigmoid", double.class));
-		Matrix final_inputs = Matrix.dot(this.who, hidden_outputs);
-		Matrix final_outputs = final_inputs.map(new NeuralNetwork(),
-				NeuralNetwork.class.getMethod("sigmoid", double.class));
+			Matrix hidden_inputs = Matrix.dot(this.wih, inputs);
+			Matrix hidden_outputs = hidden_inputs.map(new NeuralNetwork(),
+					NeuralNetwork.class.getMethod("sigmoid", double.class));
+			Matrix final_inputs = Matrix.dot(this.who, hidden_outputs);
+			Matrix final_outputs = final_inputs.map(new NeuralNetwork(),
+					NeuralNetwork.class.getMethod("sigmoid", double.class));
 
-		Matrix output_errors = Matrix.sub(targets, final_outputs);
-		Matrix hidden_errors = Matrix.dot(Matrix.transpose(this.who), output_errors);
+			Matrix output_errors = Matrix.sub(targets, final_outputs);
+			Matrix hidden_errors = Matrix.dot(Matrix.transpose(this.who), output_errors);
 
-		this.who.add(Matrix
-				.mult(Matrix.dot(Matrix.mult(output_errors, Matrix.mult(final_outputs, Matrix.sub(1, final_outputs))),
-						Matrix.transpose(hidden_outputs)), this.learningrate));
+			this.who.add(Matrix.mult(
+					Matrix.dot(Matrix.mult(output_errors, Matrix.mult(final_outputs, Matrix.sub(1, final_outputs))),
+							Matrix.transpose(hidden_outputs)),
+					this.learningrate));
 
-		this.wih.add(Matrix
-				.mult(Matrix.dot(Matrix.mult(hidden_errors, Matrix.mult(hidden_outputs, Matrix.sub(1, hidden_outputs))),
-						Matrix.transpose(inputs)), this.learningrate));
+			this.wih.add(Matrix.mult(
+					Matrix.dot(Matrix.mult(hidden_errors, Matrix.mult(hidden_outputs, Matrix.sub(1, hidden_outputs))),
+							Matrix.transpose(inputs)),
+					this.learningrate));
+		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
+				| SecurityException e) {
+			System.out.println(err_Message);
+			System.err.println(e);
 
+		}
 	}
 
 	/**
@@ -149,15 +152,9 @@ public class NeuralNetwork implements Serializable {
 	 * 
 	 * @param inputs_list  die Eingaben in das Neuronale Netz
 	 * @param targets_list die Ausgabe des Neuronalen Netzes
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 * @throws InvocationTargetException
-	 * @throws NoSuchMethodException
-	 * @throws SecurityException
 	 * @since 1.0.0
 	 */
-	public void train(double inputs_list[][], double targets_list[][]) throws IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+	public void train(double inputs_list[][], double targets_list[][]) {
 		this.train(new Matrix(inputs_list), new Matrix(targets_list));
 	}
 
