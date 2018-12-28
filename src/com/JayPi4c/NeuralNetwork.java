@@ -1,4 +1,4 @@
-package com.JayPi4c.NeuralNetwork;
+package com.JayPi4c;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,8 +8,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
-
-import com.JayPi4c.Matrix.Matrix;
 
 /**
  * @author JayPi4c
