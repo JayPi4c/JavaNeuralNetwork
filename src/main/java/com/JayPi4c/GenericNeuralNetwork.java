@@ -93,4 +93,14 @@ public class GenericNeuralNetwork extends NeuralNetwork {
 
 	// TODO: subclass: GenericNeuralNetwork with crossover and mutation
 
+	@Override
+	public GenericNeuralNetwork copy() {
+		GenericNeuralNetwork output = new GenericNeuralNetwork(this.inputnodes, this.hiddennodes, this.outputnodes,
+				this.learningrate, this.mutationRate);
+		output.who = this.who.copy();
+		output.wih = this.wih.copy();
+
+		return output;
+	}
+
 }
