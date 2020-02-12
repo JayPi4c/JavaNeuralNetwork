@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.lang.reflect.InvocationTargetException;
 
 /**
  * @author JayPi4c
@@ -73,13 +72,10 @@ public class NeuralNetwork implements Serializable {
 		try {
 			Matrix inputs = Matrix.transpose(inputs_list);
 			Matrix hidden_inputs = Matrix.dot(this.wih, inputs);
-			Matrix hidden_outputs = hidden_inputs.map(new NeuralNetwork(),
-					NeuralNetwork.class.getMethod("sigmoid", double.class));
+			Matrix hidden_outputs = hidden_inputs.map(d -> sigmoid(d));
 			Matrix final_inputs = Matrix.dot(this.who, hidden_outputs);
-			final_outputs = final_inputs.map(new NeuralNetwork(),
-					NeuralNetwork.class.getMethod("sigmoid", double.class));
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-				| SecurityException e) {
+			final_outputs = final_inputs.map(d -> sigmoid(d));
+		} catch (Exception e) {
 			System.out.println(err_Message);
 			System.err.println(e);
 		}
@@ -105,11 +101,7 @@ public class NeuralNetwork implements Serializable {
 	 * 
 	 * @param inputs_list  die Eingaben in das Neuronale Netz
 	 * @param targets_list die Ausgabe des Neuronalen Netzes
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 * @throws InvocationTargetException
-	 * @throws NoSuchMethodException
-	 * @throws SecurityException
+	 * @throws Exception
 	 * @since 1.0.0
 	 */
 	public void train(Matrix inputs_list, Matrix targets_list) {
@@ -118,11 +110,9 @@ public class NeuralNetwork implements Serializable {
 			Matrix targets = Matrix.transpose(targets_list);
 
 			Matrix hidden_inputs = Matrix.dot(this.wih, inputs);
-			Matrix hidden_outputs = hidden_inputs.map(new NeuralNetwork(),
-					NeuralNetwork.class.getMethod("sigmoid", double.class));
+			Matrix hidden_outputs = hidden_inputs.map(d -> sigmoid(d));
 			Matrix final_inputs = Matrix.dot(this.who, hidden_outputs);
-			Matrix final_outputs = final_inputs.map(new NeuralNetwork(),
-					NeuralNetwork.class.getMethod("sigmoid", double.class));
+			Matrix final_outputs = final_inputs.map(d -> sigmoid(d));
 
 			Matrix output_errors = Matrix.sub(targets, final_outputs);
 			Matrix hidden_errors = Matrix.dot(Matrix.transpose(this.who), output_errors);
@@ -136,8 +126,7 @@ public class NeuralNetwork implements Serializable {
 					Matrix.dot(Matrix.mult(hidden_errors, Matrix.mult(hidden_outputs, Matrix.sub(1, hidden_outputs))),
 							Matrix.transpose(inputs)),
 					this.learningrate));
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException
-				| SecurityException e) {
+		} catch (Exception e) {
 			System.out.println(err_Message);
 			System.err.println(e);
 
@@ -157,17 +146,6 @@ public class NeuralNetwork implements Serializable {
 	}
 
 	// ****************************************************************************************************************//
-
-	/**
-	 * Diese Funktion gibt einen zuf&aumllligen Wert zwischen -0.5 und 0.5 aus.
-	 * 
-	 * @param d Notwendig f&uumlr die {@link com.JayPi4c.Matrix.Matrix}
-	 * @return zuf&aumllliger Wert zwischen -0.5 und 0.5
-	 * @since 1.0.0
-	 */
-	public double random(double d) {
-		return Math.random() - 0.5;
-	}
 
 	/**
 	 * Ermittelt zu einem gegebenen x-Wert den passenden y-Wert der
