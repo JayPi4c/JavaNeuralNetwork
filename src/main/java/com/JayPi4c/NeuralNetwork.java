@@ -15,12 +15,12 @@ import java.io.Serializable;
 public class NeuralNetwork implements Serializable {
 
 	private static final long serialVersionUID = 5795625580326323029L;
-	private static final String err_Message = "An error has occured. Please contact jonas4c@freenet.de to get help on this problem. Please consider to add the following errorcode for debugging purposes: ";
+	protected static final String err_Message = "An error has occured. Please contact jonas4c@freenet.de to get help on this problem. Please consider to add the following errorcode for debugging purposes: ";
 
-	private int inputnodes, hiddennodes, outputnodes;
-	private double learningrate;
+	protected int inputnodes, hiddennodes, outputnodes;
+	protected double learningrate;
 
-	private Matrix wih, who;
+	protected Matrix wih, who;
 
 	/**
 	 * Dieser Konstruktor ist nur dazu da, um {@link #sigmoid(double)} und
@@ -240,44 +240,5 @@ public class NeuralNetwork implements Serializable {
 
 		return output;
 	}
-
-	// TODO: adding mutation to make the NeuralNetwork generic
-	/**
-	 * Durch eine Mutation des Neuronalen Netzes werden ein Anteil (mutationrate)
-	 * der Gewichte im Netz zuf&aumlllig neu festgelegt.
-	 * 
-	 * Durch diese Funktion wird das aufrufende Neuronale Netz Objekt bearbeitet,
-	 * das heisst, dass der R&uumlckgabewert dieser Funktion nicht zwangsl&aumlufig
-	 * benutzt werden muss.
-	 * 
-	 * @deprecated Diese Funktion soll eigentlich in eine weitere, spezifischere
-	 *             Klasse untergebracht werden. (GenericNeuralNetwork)
-	 * @param mutationrate Der Anteil der Gewichte, die neu festgelegt werden.
-	 * @return Gibt das mutierte Neuronale Netz zur&uumlck.
-	 */
-	@Deprecated
-	public NeuralNetwork mutate(double mutationrate) {
-
-		return null;
-	}
-
-	// TODO: crossover
-	/**
-	 * Durch einen Crossover zweier Neuraler Netze wird, wie bei in echter DNA, eine
-	 * zuf&aumlllige Mischung dieser beiden Netze erstellt.
-	 * 
-	 * @deprecated Diese Funktion soll eigentlich in eine weitere, spezifischere
-	 *             Klasse untergebracht werden. (GenericNeuralNetwork)
-	 * @param other Das andere Neuronale Netz, welches mit dem Neuronalen Netz
-	 *              gemischt werden soll.
-	 * @param rate  Die Mutationsrate.
-	 * @return
-	 */
-	@Deprecated
-	public NeuralNetwork crossover(NeuralNetwork other, double rate) {
-		return null;
-	}
-
-	// TODO: subclass: GenericNeuralNetwork with crossover and mutation
 
 }
