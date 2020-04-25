@@ -1,5 +1,8 @@
 package com.JayPi4c;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -224,6 +227,94 @@ public class NeuralNetwork implements Serializable {
 		NeuralNetwork output = (NeuralNetwork) ois.readObject();
 		ois.close();
 		return output;
+	}
+
+	/**
+	 * creates a Buffered Image representing the neural networks nodes and weights
+	 * with the specified background.
+	 * 
+	 * @param background the specified color for the background
+	 * @return
+	 */
+	public BufferedImage getSchemeImage(Color background) {
+		int width = 640, height = 480;
+		int radius = 5, diameter = radius * 2;
+		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D graphics = (Graphics2D) img.getGraphics();
+		if (background != null) {
+			graphics.setColor(background);
+			graphics.fillRect(0, 0, width, height);
+		}
+		// top and bottom will have 10 pixels spare to the border
+		int y_min = (int) (0.02 * height);
+		int y_max = height - y_min;
+		int x_min = (int) (0.02 * width);
+		int x_max = width - x_min;
+
+		// this.wih.print();
+
+		// draw the weights
+		// input to hidden
+		int y_input = (y_max - y_min) / (inputnodes + 1);
+		for (int i = 0; i < inputnodes; i++) {
+			int y_hidden = (y_max - y_min) / (hiddennodes + 1);
+			int x_hidden = (x_max - x_min) / 2; // (x_max - x_min) / (#hiddenlayers+1)
+
+			for (int j = 0; j < hiddennodes; j++) {
+				float val = (float) this.wih.data[j][i];
+				float abs_val = Math.abs(val);
+				graphics.setColor(new Color(val < 0 ? abs_val : 0f, val > 0 ? abs_val : 0f, 0f, abs_val));
+				graphics.drawLine(x_min, y_min + (i + 1) * y_input, x_hidden, y_min + (j + 1) * y_hidden);
+			}
+		}
+
+		// hidden to hidden
+		// TODO if there will be multiple hidden layers
+
+		// hidden to output
+		int y_hidden = (y_max - y_min) / (hiddennodes + 1);
+		int x_hidden = (x_max - x_min) / 2; // (x_max - x_min) / (#hiddenlayers+1)
+
+		for (int i = 0; i < hiddennodes; i++) {
+			int y_output = (y_max - y_min) / (outputnodes + 1);
+
+			for (int j = 0; j < outputnodes; j++) {
+				float val = (float) this.who.data[j][i];
+				float abs_val = Math.abs(val);
+				graphics.setColor(new Color(val < 0 ? abs_val : 0f, val > 0 ? abs_val : 0f, 0f, abs_val));
+				graphics.drawLine(x_hidden, y_min + (i + 1) * y_hidden, x_max, y_min + (j + 1) * y_output);
+			}
+		}
+
+		// draw nodes
+		graphics.setColor(Color.RED);
+
+		// intput nodes
+		int y = (y_max - y_min) / (inputnodes + 1);
+		for (int i = 0; i < inputnodes; i++)
+			graphics.fillOval(x_min - radius, y_min + (i + 1) * y - radius, diameter, diameter);
+
+		// hidden nodes
+		y = (y_max - y_min) / (hiddennodes + 1);
+		int x = (x_max - x_min) / 2; // (x_max - x_min) / (#hiddenlayers+1)
+		// for(int layer = 0; layer < #hiddenlayers; layer++)
+		for (int i = 0; i < hiddennodes; i++)
+			graphics.fillOval(x - radius, y_min + (i + 1) * y - radius, diameter, diameter);
+
+		// output nodes
+		y = (y_max - y_min) / (outputnodes + 1);
+		for (int i = 0; i < outputnodes; i++)
+			graphics.fillOval(x_max - radius, y_min + (i + 1) * y - radius, diameter, diameter);
+
+		return img;
+	}
+
+	/**
+	 * 
+	 * @return a scheme image with transparent background
+	 */
+	public BufferedImage getSchemeImage() {
+		return getSchemeImage(null);
 	}
 
 	/**
