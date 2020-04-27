@@ -234,10 +234,11 @@ public class NeuralNetwork implements Serializable {
 	 * with the specified background.
 	 * 
 	 * @param background the specified color for the background
+	 * @param width      the width of the image
+	 * @param height     the height of the image
 	 * @return
 	 */
-	public BufferedImage getSchemeImage(Color background) {
-		int width = 640, height = 480;
+	public BufferedImage getSchemeImage(Color background, int width, int height) {
 		int radius = 5, diameter = radius * 2;
 		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D graphics = (Graphics2D) img.getGraphics();
@@ -262,7 +263,7 @@ public class NeuralNetwork implements Serializable {
 
 			for (int j = 0; j < hiddennodes; j++) {
 				float val = (float) this.wih.data[j][i];
-				float abs_val = Math.abs(val);
+				float abs_val = Math.min(Math.abs(val), 1);
 				graphics.setColor(new Color(val < 0 ? abs_val : 0f, val > 0 ? abs_val : 0f, 0f, abs_val));
 				graphics.drawLine(x_min, y_min + (i + 1) * y_input, x_hidden, y_min + (j + 1) * y_hidden);
 			}
@@ -280,7 +281,7 @@ public class NeuralNetwork implements Serializable {
 
 			for (int j = 0; j < outputnodes; j++) {
 				float val = (float) this.who.data[j][i];
-				float abs_val = Math.abs(val);
+				float abs_val = Math.min(Math.abs(val), 1);
 				graphics.setColor(new Color(val < 0 ? abs_val : 0f, val > 0 ? abs_val : 0f, 0f, abs_val));
 				graphics.drawLine(x_hidden, y_min + (i + 1) * y_hidden, x_max, y_min + (j + 1) * y_output);
 			}
@@ -311,10 +312,21 @@ public class NeuralNetwork implements Serializable {
 
 	/**
 	 * 
-	 * @return a scheme image with transparent background
+	 * @return a scheme image with a size of 640x480 and transparent background
 	 */
 	public BufferedImage getSchemeImage() {
-		return getSchemeImage(null);
+		return getSchemeImage(null, 640, 480);
+	}
+
+	/**
+	 * Creates a Scheme Image of the Neural Network with the specified size
+	 * 
+	 * @param width  width of the image
+	 * @param height height of the image
+	 * @return a BufferedImage with the specified size and a transparent Background
+	 */
+	public BufferedImage getSchemeImage(int width, int height) {
+		return getSchemeImage(null, width, height);
 	}
 
 	/**
