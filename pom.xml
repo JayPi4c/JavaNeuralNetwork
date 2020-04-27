@@ -17,7 +17,7 @@
 		<dependency>
 			<groupId>com.github.JayPi4c</groupId>
 			<artifactId>Matrix</artifactId>
-			<version>8c7d45a8ea</version>
+			<version>e2dbdf5</version>
 		</dependency>
 	</dependencies>
 

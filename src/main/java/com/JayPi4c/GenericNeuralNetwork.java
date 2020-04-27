@@ -21,9 +21,9 @@ public class GenericNeuralNetwork extends NeuralNetwork {
 	 * @param mutationRate
 	 * @since 1.1.0
 	 */
-	public GenericNeuralNetwork(int inputnodes, int hiddennodes, int outputnodes, double learningrate,
-			double mutationRate) {
-		super(inputnodes, hiddennodes, outputnodes, learningrate);
+	public GenericNeuralNetwork(double learningrate, double mutationRate, int inputnodes, int outputnodes,
+			int... hiddennodes) {
+		super(learningrate, inputnodes, outputnodes, hiddennodes);
 		this.mutationRate = mutationRate;
 	}
 
@@ -62,7 +62,7 @@ public class GenericNeuralNetwork extends NeuralNetwork {
 			}
 		}
 		wih = new Matrix(weights);
-
+		// TODO whh
 		weights = who.toArray();
 		for (int i = 0; i < weights.length; i++) {
 			for (int j = 0; j < weights[0].length; j++) {
@@ -95,8 +95,11 @@ public class GenericNeuralNetwork extends NeuralNetwork {
 
 	@Override
 	public GenericNeuralNetwork copy() {
-		GenericNeuralNetwork output = new GenericNeuralNetwork(this.inputnodes, this.hiddennodes, this.outputnodes,
-				this.learningrate, this.mutationRate);
+		GenericNeuralNetwork output = new GenericNeuralNetwork(this.learningrate, this.mutationRate, this.inputnodes,
+				this.outputnodes, this.hiddennodes);
+		for (int i = 0; i < this.whh.length; i++)
+			output.whh[i] = whh[i].copy();
+
 		output.who = this.who.copy();
 		output.wih = this.wih.copy();
 
