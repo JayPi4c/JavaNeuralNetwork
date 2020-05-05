@@ -297,49 +297,51 @@ public class NeuralNetwork implements Serializable {
 
 		// draw the weights
 		// input to hidden
-		int y_input = (y_max - y_min) / (inputnodes + 1);
+		double y_input = (y_max - y_min) / (double) (inputnodes + 1);
 		for (int i = 0; i < inputnodes; i++) {
-			int y_hidden = (y_max - y_min) / (hiddennodes[0] + 1);
-			int x_hidden = (x_max - x_min) / (hiddennodes.length + 1);
+			double y_hidden = (y_max - y_min) / (double) (hiddennodes[0] + 1);
+			double x_hidden = (x_max - x_min) / (double) (hiddennodes.length + 1);
 
 			for (int j = 0; j < hiddennodes[0]; j++) {
 				float val = (float) this.wih.data[j][i];
 				float abs_val = Math.min(Math.abs(val), 1);
 				graphics.setColor(new Color(val < 0 ? abs_val : 0f, val > 0 ? abs_val : 0f, 0f, abs_val));
-				graphics.drawLine(x_min, y_min + (i + 1) * y_input, x_min + x_hidden, y_min + (j + 1) * y_hidden);
+				graphics.drawLine(x_min, (int) (y_min + (i + 1) * y_input), (int) (x_min + x_hidden),
+						(int) (y_min + (j + 1) * y_hidden));
 			}
 		}
 
 		// hidden to hidden
-		int x_spacer = (x_max - x_min) / (hiddennodes.length + 1);
+		double x_spacer = (x_max - x_min) / (double) (hiddennodes.length + 1);
 		for (int i = 0; i < whh.length; i++) {
-			int x_input = x_min + (i + 1) * x_spacer;
-			int x_output = x_input + x_spacer;
-			int y_spacer_input = (y_max - y_min) / (hiddennodes[i] + 1);
-			int y_spacer_output = (y_max - y_min) / (hiddennodes[i + 1] + 1);
+			double x_input = x_min + (i + 1) * x_spacer;
+			double x_output = x_input + x_spacer;
+			double y_spacer_input = (y_max - y_min) / (double) (hiddennodes[i] + 1);
+			double y_spacer_output = (y_max - y_min) / (double) (hiddennodes[i + 1] + 1);
 			for (int node = 0; node < hiddennodes[i]; node++) {
 				for (int nextNode = 0; nextNode < hiddennodes[i + 1]; nextNode++) {
 					float val = (float) this.whh[i].data[nextNode][node];
 					float abs_val = Math.min(Math.abs(val), 1);
 					graphics.setColor(new Color(val < 0 ? abs_val : 0f, val > 0 ? abs_val : 0f, 0f, abs_val));
-					graphics.drawLine(x_input, y_min + (node + 1) * y_spacer_input, x_output,
-							y_min + (nextNode + 1) * y_spacer_output);
+					graphics.drawLine((int) x_input, (int) (y_min + (node + 1) * y_spacer_input), (int) x_output,
+							(int) (y_min + (nextNode + 1) * y_spacer_output));
 				}
 			}
 		}
 
 		// hidden to output
-		int y_hidden = (y_max - y_min) / (hiddennodes[hiddennodes.length - 1] + 1);
-		int x_hidden = (x_max - x_min) / (hiddennodes.length + 1);
+		double y_hidden = (y_max - y_min) / (double) (hiddennodes[hiddennodes.length - 1] + 1);
+		double x_hidden = (x_max - x_min) / (double) (hiddennodes.length + 1);
 
 		for (int i = 0; i < hiddennodes[hiddennodes.length - 1]; i++) {
-			int y_output = (y_max - y_min) / (outputnodes + 1);
+			double y_output = (y_max - y_min) / (double) (outputnodes + 1);
 
 			for (int j = 0; j < outputnodes; j++) {
 				float val = (float) this.who.data[j][i];
 				float abs_val = Math.min(Math.abs(val), 1);
 				graphics.setColor(new Color(val < 0 ? abs_val : 0f, val > 0 ? abs_val : 0f, 0f, abs_val));
-				graphics.drawLine(x_max - x_hidden, y_min + (i + 1) * y_hidden, x_max, y_min + (j + 1) * y_output);
+				graphics.drawLine((int) (x_max - x_hidden), (int) (y_min + (i + 1) * y_hidden), (x_max),
+						(int) (y_min + (j + 1) * y_output));
 			}
 		}
 
@@ -347,22 +349,23 @@ public class NeuralNetwork implements Serializable {
 		graphics.setColor(Color.RED);
 
 		// intput nodes
-		int y = (y_max - y_min) / (inputnodes + 1);
+		double y = (y_max - y_min) / (double) (inputnodes + 1);
 		for (int i = 0; i < inputnodes; i++)
-			graphics.fillOval(x_min - radius, y_min + (i + 1) * y - radius, diameter, diameter);
+			graphics.fillOval(x_min - radius, (int) (y_min + (i + 1) * y - radius), diameter, diameter);
 
 		// hidden nodes
-		int x = (x_max - x_min) / (hiddennodes.length + 1);
+		double x = (x_max - x_min) / (double) (hiddennodes.length + 1);
 		for (int layer = 0; layer < hiddennodes.length; layer++) {
-			y = (y_max - y_min) / (hiddennodes[layer] + 1);
+			y = (y_max - y_min) / (double) (hiddennodes[layer] + 1);
 			for (int i = 0; i < hiddennodes[layer]; i++)
-				graphics.fillOval(x_min + x * (layer + 1) - radius, y_min + (i + 1) * y - radius, diameter, diameter);
+				graphics.fillOval((int) (x_min + x * (layer + 1) - radius), (int) (y_min + (i + 1) * y - radius),
+						diameter, diameter);
 		}
 
 		// output nodes
-		y = (y_max - y_min) / (outputnodes + 1);
+		y = (y_max - y_min) / (double) (outputnodes + 1);
 		for (int i = 0; i < outputnodes; i++)
-			graphics.fillOval(x_max - radius, y_min + (i + 1) * y - radius, diameter, diameter);
+			graphics.fillOval(x_max - radius, (int) (y_min + (i + 1) * y - radius), diameter, diameter);
 
 		return img;
 	}
