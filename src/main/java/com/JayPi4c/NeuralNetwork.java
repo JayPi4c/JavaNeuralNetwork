@@ -10,22 +10,66 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.Arrays;
 
 /**
  * @author JayPi4c
- * @version 1.1.0
+ * @version 1.2.0
  */
 public class NeuralNetwork implements Serializable {
 
 	private static final long serialVersionUID = 5795625580326323029L;
 	protected static final String err_Message = "An error has occured. Please contact jonas4c@freenet.de to get help on this problem. Please consider to add the following errorcode for debugging purposes: ";
 
-	protected int inputnodes, outputnodes;
-	protected int[] hiddennodes;
+	public static final ActivationFunction sigmoid = new ActivationFunction() {
+
+		@Override
+		public double deactivate(double y) {
+			return y * (1 - y);
+		}
+
+		@Override
+		public double activate(double x) {
+			return (1 / (1 + Math.pow(Math.E, -x)));
+		}
+	};
+	public static final ActivationFunction tanh = new ActivationFunction() {
+
+		@Override
+		public double deactivate(double y) {
+			return 1 - (y * y);
+		}
+
+		@Override
+		public double activate(double x) {
+			return Math.tanh(x);
+		}
+	};
+
+	protected ActivationFunction actFunc = sigmoid;
+
+	/**
+	 * This array includes the number of nodes for each layer<br>
+	 * - layers[0] -> number of nodes in input layer<br>
+	 * - layers[nodes.length-1] -> number of nodes in output layer<br>
+	 * - layers[n] -> number of nodes in nth hidden layer
+	 */
+	protected int[] layers;
 	protected double learningrate;
 
-	protected Matrix wih, who;
-	protected Matrix[] whh;
+	/**
+	 * This array includes the weight matrices for each layer<br>
+	 * - weights[0] -> weights for input hidden#1 - weights[weights.length-1]<br>
+	 * - weights for hidden->output
+	 */
+	protected Matrix[] weights;
+
+	/**
+	 * This array includes the bias matrices for each layer<br>
+	 * -> biases[0] -> biases for layer hidden#1<br>
+	 * -> biases[biases.length-1] -> biases for output layer
+	 */
+	protected Matrix[] biases;
 
 	/**
 	 * Erstellt ein Neuronales Netz mit der jeweiligen Anzahl an Input-, Hidden- und
@@ -44,27 +88,36 @@ public class NeuralNetwork implements Serializable {
 	public NeuralNetwork(double learningrate, int inputnodes, int outputnodes, int... hiddennodes) {
 		this.learningrate = learningrate;
 
-		this.inputnodes = inputnodes;
+		this.layers = new int[hiddennodes.length + 2];
+
+		// add input nodes to layers
 		if (inputnodes < 1)
 			throw new IllegalArgumentException("Inputnodes must at least be one!");
-		this.outputnodes = outputnodes;
+		else
+			this.layers[0] = inputnodes;
+
+		// add output nodes to layers
 		if (outputnodes < 1)
 			throw new IllegalArgumentException("Outputnodes must at least be one!");
-		this.hiddennodes = hiddennodes;
+		else
+			this.layers[layers.length - 1] = outputnodes;
+
+		// add hidden nodes to layers
 		if (hiddennodes == null || hiddennodes.length == 0)
 			throw new IllegalArgumentException("At least one hidden layer must be provided!");
 		for (int i = 0; i < hiddennodes.length; i++)
 			if (hiddennodes[i] < 1)
 				throw new IllegalArgumentException(
 						"All hidden layers must at least have one neuron, which is not true for layer #" + (i + 1));
+			else
+				layers[i + 1] = hiddennodes[i];
 
-		this.wih = new Matrix(this.hiddennodes[0], this.inputnodes).randomize(-0.5, 0.5);
-
-		this.whh = new Matrix[this.hiddennodes.length - 1];
-		for (int i = 0; i < whh.length; i++)
-			whh[i] = new Matrix(this.hiddennodes[i + 1], this.hiddennodes[i]).randomize(-0.5, 0.5);
-
-		this.who = new Matrix(this.outputnodes, this.hiddennodes[this.hiddennodes.length - 1]).randomize(-0.5, 0.5);
+		weights = new Matrix[layers.length - 1];
+		biases = new Matrix[layers.length - 1];
+		for (int i = 1; i < layers.length; i++) {
+			weights[i - 1] = new Matrix(layers[i], layers[i - 1]).randomize(-0.5, 0.5);
+			biases[i - 1] = new Matrix(layers[i], 1).randomize(-0.5, 0.5);
+		}
 
 	}
 
@@ -78,27 +131,14 @@ public class NeuralNetwork implements Serializable {
 	 * @since 1.0.0
 	 */
 	public Matrix query(Matrix inputs_list) {
-		Matrix final_outputs = null;
-		try {
-			Matrix inputs = Matrix.transpose(inputs_list);
-			Matrix hidden_inputs[] = new Matrix[hiddennodes.length];
-			Matrix hidden_outputs[] = new Matrix[hiddennodes.length];
 
-			hidden_inputs[0] = Matrix.dot(this.wih, inputs);
-			hidden_outputs[0] = hidden_inputs[0].map(d -> sigmoid(d));
-
-			for (int i = 1; i < hiddennodes.length; i++) {
-				hidden_inputs[i] = Matrix.dot(this.whh[i - 1], hidden_outputs[i - 1]);
-				hidden_outputs[i] = hidden_inputs[i].map(d -> sigmoid(d));
-			}
-
-			Matrix final_inputs = Matrix.dot(this.who, hidden_outputs[hiddennodes.length - 1]);
-			final_outputs = final_inputs.map(d -> sigmoid(d));
-		} catch (Exception e) {
-			System.out.println(err_Message);
-			System.err.println(e);
+		Matrix matrix = Matrix.transpose(inputs_list);
+		for (int i = 0; i < weights.length; i++) {
+			matrix = Matrix.dot(weights[i], matrix);
+			matrix.add(biases[i]);
+			matrix.map(d -> actFunc.activate(d));
 		}
-		return final_outputs;
+		return matrix;
 	}
 
 	/**
@@ -125,55 +165,45 @@ public class NeuralNetwork implements Serializable {
 	 */
 	public void train(Matrix inputs_list, Matrix targets_list) {
 
-		Matrix inputs = Matrix.transpose(inputs_list);
-		Matrix targets = Matrix.transpose(targets_list);
-
-		Matrix hidden_inputs[] = new Matrix[hiddennodes.length];
-		Matrix hidden_outputs[] = new Matrix[hiddennodes.length];
-
-		hidden_inputs[0] = Matrix.dot(this.wih, inputs);
-		hidden_outputs[0] = hidden_inputs[0].map(d -> sigmoid(d));
-
-		for (int i = 1; i < hiddennodes.length; i++) {
-			hidden_inputs[i] = Matrix.dot(this.whh[i - 1], hidden_outputs[i - 1]);
-			hidden_outputs[i] = hidden_inputs[i].map(d -> sigmoid(d));
+		Matrix results[] = new Matrix[weights.length + 1];
+		results[0] = Matrix.transpose(inputs_list);
+		for (int i = 0; i < weights.length; i++) {
+			results[i + 1] = Matrix.dot(weights[i], results[i]);
+			results[i + 1].add(biases[i]);
+			results[i + 1].map(d -> actFunc.activate(d));
 		}
 
-		Matrix final_inputs = Matrix.dot(this.who, hidden_outputs[hiddennodes.length - 1]);
-		Matrix final_outputs = final_inputs.map(d -> sigmoid(d));
+		Matrix error = Matrix.sub(targets_list, results[results.length - 1]);
+		Matrix gradients = results[results.length - 1].map(d -> actFunc.deactivate(d));
+		gradients.mult(error);
+		gradients.mult(learningrate);
 
-		// Matrix inputs = Matrix.transpose(inputs_list);
-		// Matrix targets = Matrix.transpose(targets_list);
+		// calculate deltas
+		Matrix prev_T = Matrix.transpose(results[results.length - 2]);
+		Matrix weight_deltas = Matrix.dot(gradients, prev_T);
 
-		// Matrix hidden_inputs = Matrix.dot(this.wih, inputs);
-		// Matrix hidden_outputs = hidden_inputs.map(d -> sigmoid(d));
-		// Matrix final_inputs = Matrix.dot(this.who, hidden_outputs);
-		// Matrix final_outputs = final_inputs.map(d -> sigmoid(d));
+		// Adjust the weights by deltas
+		weights[results.length - 2].add(weight_deltas);
+		// Adjust the bias by its deltas (which is just the gradients)
+		biases[results.length - 2].add(gradients);
 
-		Matrix output_errors = Matrix.sub(targets, final_outputs);
+		for (int i = results.length - 2; i >= 1; i--) {
+			// calculate error
+			error = Matrix.dot(Matrix.transpose(weights[i]), error);
 
-		Matrix hidden_errors[] = new Matrix[hiddennodes.length];
+			gradients = results[i].map(d -> actFunc.deactivate(d));
+			gradients.mult(error);
+			gradients.mult(learningrate);
 
-		hidden_errors[hiddennodes.length - 1] = Matrix.dot(Matrix.transpose(this.who), output_errors);
+			// calculate deltas
+			prev_T = Matrix.transpose(results[i - 1]);
+			weight_deltas = Matrix.dot(gradients, prev_T);
 
-		for (int i = hiddennodes.length - 2; i >= 0; i--) {
-			hidden_errors[i] = Matrix.dot(Matrix.transpose(whh[i]), hidden_errors[i + 1]);
+			// Adjust the weights by deltas
+			weights[i - 1].add(weight_deltas);
+			// Adjust the bias by its deltas (which is just the gradients)
+			biases[i - 1].add(gradients);
 		}
-
-		this.who.add(Matrix
-				.mult(Matrix.dot(Matrix.mult(output_errors, Matrix.mult(final_outputs, Matrix.sub(1, final_outputs))),
-						Matrix.transpose(hidden_outputs[hiddennodes.length - 1])), this.learningrate));
-
-		for (int i = hiddennodes.length - 1; i >= 1; i--) {
-			this.whh[i - 1].add(Matrix.mult(Matrix.dot(
-					Matrix.mult(hidden_errors[i], Matrix.mult(hidden_outputs[i], Matrix.sub(1, hidden_outputs[i]))),
-					Matrix.transpose(hidden_outputs[i - 1])), this.learningrate));
-		}
-
-		this.wih.add(Matrix.mult(Matrix.dot(
-				Matrix.mult(hidden_errors[0], Matrix.mult(hidden_outputs[0], Matrix.sub(1, hidden_outputs[0]))),
-				Matrix.transpose(inputs)), this.learningrate));
-
 	}
 
 	/**
@@ -191,22 +221,10 @@ public class NeuralNetwork implements Serializable {
 	// ****************************************************************************************************************//
 
 	/**
-	 * Ermittelt zu einem gegebenen x-Wert den passenden y-Wert der
-	 * Sigmoid-Funktion.
-	 * 
-	 * @param x
-	 * @return Der Wert der Sigmoid-Funktion f&uumlr das angegebene x
-	 * @since 1.0.0
-	 */
-	public double sigmoid(double x) {
-		return (1 / (1 + Math.pow(Math.E, -x)));
-	}
-
-	/**
 	 * 
 	 * Mit dieser Funktion l&aumlsst sich das Objekt des Neuronalen Netzes in einer
 	 * Datei speichern, sodass auch nach beenden des Programms der Fortschritt bzw.
-	 * der Zustand des Netzes gespeichert bleiben kann. Die entstandene Datei kann
+	 * der Zustand des Netzes gespeichert bleiben kann. Die ndene Datei kann
 	 * anschlie&szligend bzw. bei einem Neustart des Programms mit
 	 * {@link #deserialize(File)} wieder eingelesen werden.
 	 * 
@@ -293,79 +311,41 @@ public class NeuralNetwork implements Serializable {
 		int x_min = (int) (0.02 * width);
 		int x_max = width - x_min;
 
-		// this.wih.print();
+		double x = (x_max - x_min) / (double) (layers.length - 1);
 
 		// draw the weights
-		// input to hidden
-		double y_input = (y_max - y_min) / (double) (inputnodes + 1);
-		for (int i = 0; i < inputnodes; i++) {
-			double y_hidden = (y_max - y_min) / (double) (hiddennodes[0] + 1);
-			double x_hidden = (x_max - x_min) / (double) (hiddennodes.length + 1);
-
-			for (int j = 0; j < hiddennodes[0]; j++) {
-				float val = (float) this.wih.data[j][i];
-				float abs_val = Math.min(Math.abs(val), 1);
-				graphics.setColor(new Color(val < 0 ? abs_val : 0f, val > 0 ? abs_val : 0f, 0f, abs_val));
-				graphics.drawLine(x_min, (int) (y_min + (i + 1) * y_input), (int) (x_min + x_hidden),
-						(int) (y_min + (j + 1) * y_hidden));
-			}
-		}
-
-		// hidden to hidden
-		double x_spacer = (x_max - x_min) / (double) (hiddennodes.length + 1);
-		for (int i = 0; i < whh.length; i++) {
-			double x_input = x_min + (i + 1) * x_spacer;
-			double x_output = x_input + x_spacer;
-			double y_spacer_input = (y_max - y_min) / (double) (hiddennodes[i] + 1);
-			double y_spacer_output = (y_max - y_min) / (double) (hiddennodes[i + 1] + 1);
-			for (int node = 0; node < hiddennodes[i]; node++) {
-				for (int nextNode = 0; nextNode < hiddennodes[i + 1]; nextNode++) {
-					float val = (float) this.whh[i].data[nextNode][node];
+		for (int layer = 0; layer < weights.length; layer++) {
+			int x_left = (int) (x_min + layer * x);
+			int x_right = (int) (x_left + x);
+			double y_spacer_left = (y_max - y_min) / (double) (layers[layer] + 1);
+			double y_spacer_right = (y_max - y_min) / (double) (layers[layer + 1] + 1);
+			for (int left_nodes = 0; left_nodes < layers[layer]; left_nodes++) {
+				for (int right_nodes = 0; right_nodes < layers[layer + 1]; right_nodes++) {
+					float val = (float) weights[layer].data[right_nodes][left_nodes];
 					float abs_val = Math.min(Math.abs(val), 1);
 					graphics.setColor(new Color(val < 0 ? abs_val : 0f, val > 0 ? abs_val : 0f, 0f, abs_val));
-					graphics.drawLine((int) x_input, (int) (y_min + (node + 1) * y_spacer_input), (int) x_output,
-							(int) (y_min + (nextNode + 1) * y_spacer_output));
+					graphics.drawLine(x_left, (int) (y_min + (left_nodes + 1) * y_spacer_left), x_right,
+							(int) (y_min + (right_nodes + 1) * y_spacer_right));
 				}
 			}
 		}
 
-		// hidden to output
-		double y_hidden = (y_max - y_min) / (double) (hiddennodes[hiddennodes.length - 1] + 1);
-		double x_hidden = (x_max - x_min) / (double) (hiddennodes.length + 1);
+		// draw nodes
+		// set node color according to bias
+		graphics.setColor(Color.BLUE);
+		for (int i = 0; i < layers.length; i++) {
+			double y = (y_max - y_min) / (double) (layers[i] + 1);
+			for (int node = 0; node < layers[i]; node++) {
+				if (i > 0) {
+					float val = (float) biases[i - 1].data[node][0];
+					float abs_val = Math.min(Math.abs(val), 1);
+					graphics.setColor(new Color(val < 0 ? abs_val : 0f, val > 0 ? abs_val : 0f, 0f, abs_val));
+				}
+				graphics.fillOval((int) (x_min + i * x - radius), (int) (y_min + (node + 1) * y - radius), diameter,
+						diameter);
 
-		for (int i = 0; i < hiddennodes[hiddennodes.length - 1]; i++) {
-			double y_output = (y_max - y_min) / (double) (outputnodes + 1);
-
-			for (int j = 0; j < outputnodes; j++) {
-				float val = (float) this.who.data[j][i];
-				float abs_val = Math.min(Math.abs(val), 1);
-				graphics.setColor(new Color(val < 0 ? abs_val : 0f, val > 0 ? abs_val : 0f, 0f, abs_val));
-				graphics.drawLine((int) (x_max - x_hidden), (int) (y_min + (i + 1) * y_hidden), (x_max),
-						(int) (y_min + (j + 1) * y_output));
 			}
 		}
-
-		// draw nodes
-		graphics.setColor(Color.RED);
-
-		// intput nodes
-		double y = (y_max - y_min) / (double) (inputnodes + 1);
-		for (int i = 0; i < inputnodes; i++)
-			graphics.fillOval(x_min - radius, (int) (y_min + (i + 1) * y - radius), diameter, diameter);
-
-		// hidden nodes
-		double x = (x_max - x_min) / (double) (hiddennodes.length + 1);
-		for (int layer = 0; layer < hiddennodes.length; layer++) {
-			y = (y_max - y_min) / (double) (hiddennodes[layer] + 1);
-			for (int i = 0; i < hiddennodes[layer]; i++)
-				graphics.fillOval((int) (x_min + x * (layer + 1) - radius), (int) (y_min + (i + 1) * y - radius),
-						diameter, diameter);
-		}
-
-		// output nodes
-		y = (y_max - y_min) / (double) (outputnodes + 1);
-		for (int i = 0; i < outputnodes; i++)
-			graphics.fillOval(x_max - radius, (int) (y_min + (i + 1) * y - radius), diameter, diameter);
 
 		return img;
 	}
@@ -393,15 +373,27 @@ public class NeuralNetwork implements Serializable {
 
 	/**
 	 * 
+	 * @param actFunc
+	 */
+	public void setActivationFunction(ActivationFunction actFunc) {
+		this.actFunc = actFunc;
+	}
+
+	/**
+	 * 
 	 * @return Gibt eine Kopie des neuronalen Netzes zur&uumlck, welche in die exakt
 	 *         gleichen Werte hat, wie das originale Netz, aber keinen Bezug hat.
 	 * @since 1.0.0
 	 */
 	public NeuralNetwork copy() {
 		NeuralNetwork output = null;
-		output = new NeuralNetwork(this.learningrate, this.inputnodes, this.outputnodes, this.hiddennodes);
-		output.who = this.who.copy();
-		output.wih = this.wih.copy();
+		output = new NeuralNetwork(this.learningrate, this.layers[0], this.layers[layers.length - 1],
+				Arrays.copyOfRange(layers, 1, layers.length - 1));
+		for (int i = 0; i < weights.length; i++)
+			output.weights[i] = weights[i].copy();
+
+		for (int i = 0; i < biases.length; i++)
+			output.biases[i] = biases[i].copy();
 
 		return output;
 	}
