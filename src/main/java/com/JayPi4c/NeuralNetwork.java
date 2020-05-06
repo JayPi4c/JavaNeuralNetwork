@@ -173,7 +173,7 @@ public class NeuralNetwork implements Serializable {
 			results[i + 1].map(d -> actFunc.activate(d));
 		}
 
-		Matrix error = Matrix.sub(targets_list, results[results.length - 1]);
+		Matrix error = Matrix.sub(Matrix.transpose(targets_list), results[results.length - 1]);
 		Matrix gradients = results[results.length - 1].map(d -> actFunc.deactivate(d));
 		gradients.mult(error);
 		gradients.mult(learningrate);
@@ -298,6 +298,7 @@ public class NeuralNetwork implements Serializable {
 	 * @since 1.1.0
 	 */
 	public BufferedImage getSchemeImage(Color background, int width, int height) {
+		int maxNodes = 25;
 		int radius = 5, diameter = radius * 2;
 		BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D graphics = (Graphics2D) img.getGraphics();
@@ -317,10 +318,10 @@ public class NeuralNetwork implements Serializable {
 		for (int layer = 0; layer < weights.length; layer++) {
 			int x_left = (int) (x_min + layer * x);
 			int x_right = (int) (x_left + x);
-			double y_spacer_left = (y_max - y_min) / (double) (layers[layer] + 1);
-			double y_spacer_right = (y_max - y_min) / (double) (layers[layer + 1] + 1);
-			for (int left_nodes = 0; left_nodes < layers[layer]; left_nodes++) {
-				for (int right_nodes = 0; right_nodes < layers[layer + 1]; right_nodes++) {
+			double y_spacer_left = (y_max - y_min) / Math.min(layers[layer] + 1, maxNodes);
+			double y_spacer_right = (y_max - y_min) / Math.min(layers[layer + 1] + 1, maxNodes);
+			for (int left_nodes = 0; left_nodes < Math.min(layers[layer], maxNodes); left_nodes++) {
+				for (int right_nodes = 0; right_nodes < Math.min(layers[layer + 1], maxNodes); right_nodes++) {
 					float val = (float) weights[layer].data[right_nodes][left_nodes];
 					float abs_val = Math.min(Math.abs(val), 1);
 					graphics.setColor(new Color(val < 0 ? abs_val : 0f, val > 0 ? abs_val : 0f, 0f, abs_val));
@@ -334,8 +335,8 @@ public class NeuralNetwork implements Serializable {
 		// set node color according to bias
 		graphics.setColor(Color.BLUE);
 		for (int i = 0; i < layers.length; i++) {
-			double y = (y_max - y_min) / (double) (layers[i] + 1);
-			for (int node = 0; node < layers[i]; node++) {
+			double y = (y_max - y_min) / Math.min(layers[i] + 1, maxNodes);
+			for (int node = 0; node < Math.min(layers[i], maxNodes); node++) {
 				if (i > 0) {
 					float val = (float) biases[i - 1].data[node][0];
 					float abs_val = Math.min(Math.abs(val), 1);
