@@ -381,6 +381,24 @@ public class NeuralNetwork implements Serializable {
 	}
 
 	/**
+	 * Sets the learning rate to the given value
+	 * 
+	 * @param learningrate new learning rate
+	 */
+	public void setLearningrate(double learningrate) {
+		this.learningrate = learningrate;
+	}
+
+	/**
+	 * Returns the current learning rate of the neural network
+	 * 
+	 * @return current learning rate
+	 */
+	public double getLearningrate() {
+		return this.learningrate;
+	}
+
+	/**
 	 * 
 	 * @return Gibt eine Kopie des neuronalen Netzes zur&uumlck, welche in die exakt
 	 *         gleichen Werte hat, wie das originale Netz, aber keinen Bezug hat.
