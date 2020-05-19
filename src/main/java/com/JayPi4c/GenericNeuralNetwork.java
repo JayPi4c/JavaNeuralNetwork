@@ -1,5 +1,7 @@
 package com.JayPi4c;
 
+import java.util.Arrays;
+
 /**
  * 
  * @author JayPi4c
@@ -21,9 +23,9 @@ public class GenericNeuralNetwork extends NeuralNetwork {
 	 * @param mutationRate
 	 * @since 1.1.0
 	 */
-	public GenericNeuralNetwork(int inputnodes, int hiddennodes, int outputnodes, double learningrate,
-			double mutationRate) {
-		super(inputnodes, hiddennodes, outputnodes, learningrate);
+	public GenericNeuralNetwork(double learningrate, double mutationRate, int inputnodes, int outputnodes,
+			int... hiddennodes) {
+		super(learningrate, inputnodes, outputnodes, hiddennodes);
 		this.mutationRate = mutationRate;
 	}
 
@@ -54,23 +56,26 @@ public class GenericNeuralNetwork extends NeuralNetwork {
 	 * @since 1.0.0
 	 */
 	public GenericNeuralNetwork mutate(double mutationRate) {
-		double weights[][] = this.wih.toArray();
-		for (int i = 0; i < weights.length; i++) {
-			for (int j = 0; j < weights[0].length; j++) {
-				if (Math.random() < mutationRate)
-					weights[i][j] = Math.random() - 0.5;
-			}
-		}
-		wih = new Matrix(weights);
 
-		weights = who.toArray();
-		for (int i = 0; i < weights.length; i++) {
-			for (int j = 0; j < weights[0].length; j++) {
-				if (Math.random() < mutationRate)
-					weights[i][j] = Math.random() - 0.5;
+		for (Matrix weight : this.weights) {
+			for (int i = 0; i < weight.cols; i++) {
+				for (int j = 0; j < weight.rows; j++) {
+					if (Math.random() < mutationRate)
+						weight.data[j][i] = Math.random() - 0.5;
+
+				}
 			}
 		}
-		who = new Matrix(weights);
+
+		for (Matrix bias : this.biases) {
+			for (int i = 0; i < bias.cols; i++) {
+				for (int j = 0; j < bias.rows; j++) {
+					if (Math.random() < mutationRate)
+						bias.data[j][i] = Math.random() - 0.5;
+
+				}
+			}
+		}
 		return this;
 	}
 
@@ -95,10 +100,14 @@ public class GenericNeuralNetwork extends NeuralNetwork {
 
 	@Override
 	public GenericNeuralNetwork copy() {
-		GenericNeuralNetwork output = new GenericNeuralNetwork(this.inputnodes, this.hiddennodes, this.outputnodes,
-				this.learningrate, this.mutationRate);
-		output.who = this.who.copy();
-		output.wih = this.wih.copy();
+		GenericNeuralNetwork output = new GenericNeuralNetwork(this.learningrate, this.mutationRate, this.layers[0],
+				this.layers[layers.length - 1], Arrays.copyOfRange(layers, 1, layers.length - 1));
+
+		for (int i = 0; i < weights.length; i++)
+			output.weights[i] = weights[i].copy();
+
+		for (int i = 0; i < biases.length; i++)
+			output.biases[i] = biases[i].copy();
 
 		return output;
 	}
