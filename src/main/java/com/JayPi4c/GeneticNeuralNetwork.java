@@ -8,7 +8,7 @@ import java.util.Arrays;
  * @version 1.0.0
  * @since 1.1.0
  */
-public class GenericNeuralNetwork extends NeuralNetwork {
+public class GeneticNeuralNetwork extends NeuralNetwork {
 
 	private static final long serialVersionUID = 8008374505415220211L;
 
@@ -23,20 +23,20 @@ public class GenericNeuralNetwork extends NeuralNetwork {
 	 * @param mutationRate
 	 * @since 1.1.0
 	 */
-	public GenericNeuralNetwork(double learningrate, double mutationRate, int inputnodes, int outputnodes,
+	public GeneticNeuralNetwork(double learningrate, double mutationRate, int inputnodes, int outputnodes,
 			int... hiddennodes) {
 		super(learningrate, inputnodes, outputnodes, hiddennodes);
 		this.mutationRate = mutationRate;
 	}
 
 	/**
-	 * Diese Funktion ruft {@link GenericNeuralNetwork#mutate(double)} mit der im
+	 * Diese Funktion ruft {@link GeneticNeuralNetwork#mutate(double)} mit der im
 	 * Konstruktor definierten mutationRate auf.
 	 * 
 	 * @return mutated instance of calling object
 	 * @since 1.1.0
 	 */
-	public GenericNeuralNetwork mutate() {
+	public GeneticNeuralNetwork mutate() {
 		return mutate(this.mutationRate);
 	}
 
@@ -55,7 +55,7 @@ public class GenericNeuralNetwork extends NeuralNetwork {
 	 * @return Gibt das mutierte Neuronale Netz zur&uumlck.
 	 * @since 1.0.0
 	 */
-	public GenericNeuralNetwork mutate(double mutationRate) {
+	public GeneticNeuralNetwork mutate(double mutationRate) {
 
 		for (Matrix weight : this.weights) {
 			for (int i = 0; i < weight.cols; i++) {
@@ -99,8 +99,8 @@ public class GenericNeuralNetwork extends NeuralNetwork {
 	// TODO: subclass: GenericNeuralNetwork with crossover and mutation
 
 	@Override
-	public GenericNeuralNetwork copy() {
-		GenericNeuralNetwork output = new GenericNeuralNetwork(this.learningrate, this.mutationRate, this.layers[0],
+	public GeneticNeuralNetwork copy() {
+		GeneticNeuralNetwork output = new GeneticNeuralNetwork(this.learningrate, this.mutationRate, this.layers[0],
 				this.layers[layers.length - 1], Arrays.copyOfRange(layers, 1, layers.length - 1));
 
 		for (int i = 0; i < weights.length; i++)
